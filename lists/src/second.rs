@@ -3,15 +3,15 @@
 //and drop their contents.
 
 use std::mem;
-pub struct List {
-    head: Link,
+pub struct List<T> {
+    head: Link<T>,
 }
 
-type Link = Option<Box<Node>>;
+type Link<T> = Option<Box<Node<T>>>;
 
-struct Node {
-    elem: i32,
-    next: Link,
+struct Node<T> {
+    elem: T,
+    next: Link<T>,
 }
 
 // but it's useless.
@@ -19,11 +19,11 @@ struct Node {
 // self - Value
 // &mut self - mutable reference(but we can't do to move or to destroy)
 // &self - shared reference (to observe self)
-impl List {
+impl<T> List<T> {
     pub fn new() -> Self {
         List { head: None }
     }
-    pub fn push(&mut self, elem: i32) {
+    pub fn push(&mut self, elem: T) {
         let new_node = Box::new(Node {
             elem: elem,
             next: mem::replace(&mut self.head, None), // head: empty, next: head -> stack
@@ -32,7 +32,7 @@ impl List {
         self.head = Some(new_node);
     }
     // option : an enum that represents a value that may exist.
-    pub fn pop(&mut self) -> Option<i32> {
+    pub fn pop(&mut self) -> Option<T> {
         //take : change self.head to None, return original value
         // using map
         self.head.take().map(|node| {
@@ -45,7 +45,7 @@ impl List {
 // drop
 // Box<Node> is not tail recursive, compiler can't turn this into a loop
 
-impl Drop for List {
+impl<T> Drop for List<T> {
     fn drop(&mut self) {
         //my optimization
         while let Some(boxed_node) = self.head.take() {
@@ -60,13 +60,13 @@ mod test {
 
     #[test]
     fn empty_list() {
-        let mut list = List::new();
+        let mut list: List<i32> = List::new();
         assert_eq!(list.pop(), None);
     }
 
     #[test]
     fn normal_removal() {
-        let mut list = List::new();
+        let mut list: List<i32> = List::new();
         list.push(1);
         list.push(2);
         list.push(3);
