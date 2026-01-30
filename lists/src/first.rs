@@ -59,6 +59,23 @@ impl List {
     }
 }
 
+// drop
+// Box<Node> is not tail recursive, compiler can't turn this into a loop
+
+impl Drop for List {
+    fn drop(&mut self) {
+        // let mut cur_link = mem::replace(&mut self.head, Link::Empty);
+        // while let Link::More(mut boxed_node) = cur_link {
+        //     cur_link = mem::replace(&mut boxed_node.next, Link::Empty);
+        // }
+
+        //my optimization
+        while let Link::More(mut boxed_node) = mem::replace(&mut self.head, Link::Empty) {
+            self.head = mem::replace(&mut boxed_node.next, Link::Empty);
+        }
+    }
+}
+
 #[cfg(test)]
 mod test {
     use crate::first::List;
