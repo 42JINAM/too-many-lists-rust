@@ -28,3 +28,12 @@ struct Node {
 }
 
 // but it's useless.
+// 3 primary forms of ownership
+// self - Value
+// &mut self - mutable reference(but we can't do to move or to destroy)
+// &self - shared reference (to observe self)
+impl List {
+    pub fn new() -> Self {
+        List { head: Link::Empty }
+    }
+}
