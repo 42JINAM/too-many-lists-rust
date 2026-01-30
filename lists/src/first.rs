@@ -1,0 +1,30 @@
+//Box is a pointer type for heap allocation.
+//it provides the simplest form of heap allocation, ownership for the allocation
+//and drop their contents.
+
+#[derive(Debug)]
+pub enum BadList<T> {
+    Elem(T, Box<BadList<T>>),
+    Nil, // empty container != null,
+         // null means dangling or invalid pointer (crash).
+         // nil is the VALID value that presents the end of the list.
+         // [Elem A, ptr] -> (Elem B, ptr) -> (Empty, *junk*)
+         // junk -> in the heap, that doesn't need to be heap-allocated at all.
+}
+//To avoid the extra junk, uniformly allocate and get that sweet null-pointer..
+
+pub struct List {
+    head: Link,
+}
+
+enum Link {
+    Empty,
+    More(Box<Node>),
+}
+
+struct Node {
+    elem: i32,
+    next: Link,
+}
+
+// but it's useless.
