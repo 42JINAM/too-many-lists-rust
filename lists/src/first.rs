@@ -46,4 +46,15 @@ impl List {
 
         self.head = Link::More(new_node);
     }
+    // option : an enum that represents a value that may exist.
+    pub fn pop(&mut self) -> Option<i32> {
+        //Taking ownership whit mem::replace
+        match mem::replace(&mut self.head, Link::Empty) {
+            Link::Empty => None,
+            Link::More(node) => {
+                self.head = node.next;
+                Some(node.elem)
+            }
+        }
+    }
 }
