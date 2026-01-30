@@ -2,6 +2,8 @@
 //it provides the simplest form of heap allocation, ownership for the allocation
 //and drop their contents.
 
+use std::mem;
+
 #[derive(Debug)]
 pub enum BadList<T> {
     Elem(T, Box<BadList<T>>),
@@ -35,5 +37,13 @@ struct Node {
 impl List {
     pub fn new() -> Self {
         List { head: Link::Empty }
+    }
+    pub fn push(&mut self, elem: i32) {
+        let new_node = Box::new(Node {
+            elem: elem,
+            next: mem::replace(&mut self.head, Link::Empty), // head: empty, next: head -> stack
+        });
+
+        self.head = Link::More(new_node);
     }
 }
