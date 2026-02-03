@@ -57,6 +57,9 @@ impl<T> List<T> {
             next: self.head.as_deref(),
         }
     }
+    // Our list has Rc, so we can't move ownership or mutate item
+    // so impossible to implement IntoIterator
+    // and IterMut
 }
 
 impl<'a, T> Iterator for Iter<'a, T> {
