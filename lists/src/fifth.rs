@@ -26,12 +26,13 @@ impl<'a, T> List<'a, T> {
     //as_deref_mut is a helper method on Option that, when the option contains a type
     //implementing DerefMut, converts it into an option of mutable references to the inner target.
 
-    pub fn push(&mut self, elem: T) {
+    pub fn push(&'a mut self, elem: T) {
         let new_tail = Box::new(Node {
             elem: elem,
             next: None,
         });
 
+        //pub fn push(&'a mut self, elem: T) {
         // old_tail is a local variable,so its lifetime is shorter than self.tail's
         let new_tail = match self.tail.take() {
             Some(old_tail) => {
@@ -43,6 +44,7 @@ impl<'a, T> List<'a, T> {
                 self.head.as_deref_mut()
             }
         };
+        //Now the compiler can see that the reference stored in new_tail lives as long as self
         self.tail = new_tail;
     }
 }
