@@ -3,9 +3,10 @@
 
 use std::mem;
 
-pub struct List<'a, T> {
+pub struct List<T> {
     head: Link<T>,
-    tail: Option<&'a mut Node<T>>,
+    // tail: Option<&'a mut Node<T>>,
+    tail: *mut Node<T>,
 }
 
 type Link<T> = Option<Box<Node<T>>>;
@@ -46,5 +47,35 @@ impl<'a, T> List<'a, T> {
         };
         //Now the compiler can see that the reference stored in new_tail lives as long as self
         self.tail = new_tail;
+    }
+
+    pub fn pop(&'a mut self) -> Option<T> {
+        self.head.take().map(|head| {
+            let head = *head;
+            self.head = head.next;
+
+            if self.head.is_none() {
+                self.tail = None;
+            }
+            head.elem
+        })
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use crate::fifth::List;
+
+    #[test]
+    fn basics() {
+        let mut list = List::new();
+
+        assert_eq!(list.pop(), None);
+        list.push(1);
+        list.push(2);
+        list.push(3);
+
+        assert_eq!(list.pop(), Some(1));
+        assert_eq!(list.pop(), Some(2));
     }
 }
