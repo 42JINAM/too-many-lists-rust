@@ -64,13 +64,13 @@ impl<T> List<T> {
         self.tail = raw_tail;
     }
 
-    pub fn pop(&'a mut self) -> Option<T> {
+    pub fn pop(&mut self) -> Option<T> {
         self.head.take().map(|head| {
             let head = *head;
             self.head = head.next;
 
             if self.head.is_none() {
-                self.tail = None;
+                self.tail = ptr::null_mut();
             }
             head.elem
         })
